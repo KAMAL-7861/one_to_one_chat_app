@@ -42,9 +42,11 @@ class _NewChatPageState extends State<NewChatPage> {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        body: BlocListener<ChatCubit, ChatState>(
+        body: BlocConsumer<ChatCubit, ChatState>(
           listener: (context, state) {
             print('🎯 NewChatPage: Received state: ${state.runtimeType}');
+            print('🎯 NewChatPage: State details: $state');
+            
             if (state is ChatLoading) {
               print('🎯 NewChatPage: ChatLoading state received - setting loading to true');
               setState(() => _isLoading = true);
@@ -61,179 +63,194 @@ class _NewChatPageState extends State<NewChatPage> {
               print('🎯 NewChatPage: ChatCreated state received with chatId: ${state.chatId}');
               setState(() => _isLoading = false);
               print('🎯 NewChatPage: About to navigate to ChatConversationPage');
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (_) => ChatConversationPage(
-                    chatId: state.chatId,
-                    otherUserEmail: _emailController.text.trim(),
-                  ),
-                ),
-              );
-              print('🎯 NewChatPage: Navigation to ChatConversationPage completed');
+              
+              // Use a post-frame callback to ensure navigation happens after the current build cycle
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  print('🎯 NewChatPage: Executing navigation to ChatConversationPage');
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (_) => ChatConversationPage(
+                        chatId: state.chatId,
+                        otherUserEmail: _emailController.text.trim(),
+                      ),
+                    ),
+                  );
+                  print('🎯 NewChatPage: Navigation to ChatConversationPage completed');
+                } else {
+                  print('🎯 NewChatPage: Widget not mounted, skipping navigation');
+                }
+              });
+            } else {
+              print('🎯 NewChatPage: Unhandled state received: ${state.runtimeType}');
+              setState(() => _isLoading = false);
             }
           },
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Start a New Conversation',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Enter the email address of the person you want to chat with',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  Form(
-                    key: _formKey,
-                    child: Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+          builder: (context, state) {
+            // The builder just returns the UI, listener handles side effects
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Start a New Conversation',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800],
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Recipient Email',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey[700],
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            TextFormField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              textInputAction: TextInputAction.done,
-                              onFieldSubmitted: (_) => _startChat(),
-                              decoration: InputDecoration(
-                                hintText: 'Enter email address',
-                                prefixIcon: Icon(
-                                  Icons.email_outlined,
-                                  color: Colors.blue[600],
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.blue[600]!),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: const BorderSide(color: Colors.red),
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey[50],
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 16,
-                                ),
-                              ),
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'Please enter an email address';
-                                }
-                                if (!_isValidEmail(value.trim())) {
-                                  return 'Please enter a valid email address';
-                                }
-                                if (value.trim().toLowerCase() == widget.currentUser.email.toLowerCase()) {
-                                  return 'You cannot chat with yourself';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 24),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 50,
-                              child: ElevatedButton.icon(
-                                onPressed: _isLoading ? null : _startChat,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue[600],
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  elevation: 2,
-                                ),
-                                icon: _isLoading
-                                    ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                                    : const Icon(Icons.chat_bubble_outline),
-                                label: Text(
-                                  _isLoading ? 'Starting Chat...' : 'Start Chat',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Enter the email address of the person you want to chat with',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    Form(
+                      key: _formKey,
+                      child: Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  Card(
-                    elevation: 1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.lightbulb_outline,
-                                  color: Colors.amber[600], size: 20),
-                              const SizedBox(width: 8),
                               Text(
-                                'Tips',
+                                'Recipient Email',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.grey[700],
                                 ),
                               ),
+                              const SizedBox(height: 12),
+                              TextFormField(
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.done,
+                                onFieldSubmitted: (_) => _startChat(),
+                                decoration: InputDecoration(
+                                  hintText: 'Enter email address',
+                                  prefixIcon: Icon(
+                                    Icons.email_outlined,
+                                    color: Colors.blue[600],
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(color: Colors.blue[600]!),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(color: Colors.red),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.grey[50],
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 16,
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter an email address';
+                                  }
+                                  if (!_isValidEmail(value.trim())) {
+                                    return 'Please enter a valid email address';
+                                  }
+                                  if (value.trim().toLowerCase() == widget.currentUser.email.toLowerCase()) {
+                                    return 'You cannot chat with yourself';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 24),
+                              SizedBox(
+                                width: double.infinity,
+                                height: 50,
+                                child: ElevatedButton.icon(
+                                  onPressed: _isLoading ? null : _startChat,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blue[600],
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    elevation: 2,
+                                  ),
+                                  icon: _isLoading
+                                      ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                      : const Icon(Icons.chat_bubble_outline),
+                                  label: Text(
+                                    _isLoading ? 'Starting Chat...' : 'Start Chat',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
-                          const SizedBox(height: 12),
-                          _buildTipItem('Make sure the email address is correct'),
-                          _buildTipItem('The person must be registered on the app'),
-                          _buildTipItem('You can start chatting immediately after connecting'),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                  const Spacer(),
-                ],
+                    const SizedBox(height: 32),
+                    Card(
+                      elevation: 1,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.lightbulb_outline,
+                                    color: Colors.amber[600], size: 20),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Tips',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            _buildTipItem('Make sure the email address is correct'),
+                            _buildTipItem('The person must be registered on the app'),
+                            _buildTipItem('You can start chatting immediately after connecting'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -272,15 +289,55 @@ class _NewChatPageState extends State<NewChatPage> {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
 
-  void _startChat() {
+  void _startChat() async {
     print('🔵 NewChatPage: _startChat called');
     if (_formKey.currentState!.validate()) {
       print('🔵 NewChatPage: Form validation passed');
       setState(() => _isLoading = true);
       final email = _emailController.text.trim();
       print('🔵 NewChatPage: About to call createOrGetChat with email: $email');
-      context.read<ChatCubit>().createOrGetChat(email);
-      print('🔵 NewChatPage: createOrGetChat called');
+      
+      try {
+        // Get the ChatCubit instance
+        final chatCubit = context.read<ChatCubit>();
+        
+        // Call createOrGetChat which will emit states
+        chatCubit.createOrGetChat(email);
+        print('🔵 NewChatPage: createOrGetChat called');
+        
+        // Also try direct approach - listen to the repository directly as backup
+        // This is a fallback in case BlocListener doesn't work
+        final chatRepository = chatCubit.chatRepository;
+        final chatId = await chatRepository.createOrGetChat(email);
+        print('🔵 NewChatPage: Direct repository call returned chatId: $chatId');
+        
+        // Navigate directly if we got a chatId
+        if (chatId.isNotEmpty && mounted) {
+          setState(() => _isLoading = false);
+          print('🔵 NewChatPage: Navigating directly to chat conversation');
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => ChatConversationPage(
+                chatId: chatId,
+                otherUserEmail: email,
+              ),
+            ),
+          );
+        }
+        
+      } catch (e) {
+        print('🔵 NewChatPage: Error in _startChat: $e');
+        setState(() => _isLoading = false);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to start chat: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+      
     } else {
       print('🔵 NewChatPage: Form validation failed');
     }
