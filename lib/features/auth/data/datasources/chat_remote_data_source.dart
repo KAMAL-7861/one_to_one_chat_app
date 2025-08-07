@@ -71,7 +71,9 @@ class ChatRemoteDataSource {
 
       // STEP 1: Check if target user exists and ensure they're in Firestore
       print('🔍 Checking if target user exists...');
-      await _ensureUserExistsInFirestore(email);
+      // TEMPORARILY DISABLED: Skip user existence check to allow chat creation with old project data
+      // await _ensureUserExistsInFirestore(email);
+      print('⚠️ User existence check skipped - proceeding with chat creation');
 
       // STEP 2: Check if chat already exists
       print('🔍 Checking if chat already exists...');
@@ -117,23 +119,54 @@ class ChatRemoteDataSource {
   Future<void> _ensureUserExistsInFirestore(String email) async {
     print('🔍 Checking if user exists in Firestore users collection...');
     
-    // First check if user exists in users collection
-    final usersQuery = await firestore
-        .collection('users')
-        .where('email', isEqualTo: email)
-        .limit(1)
-        .get();
+    try {
+      // First check if user exists in users collection
+      final usersQuery = await firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
 
-    if (usersQuery.docs.isNotEmpty) {
-      print('✅ User found in users collection');
-      return;
+      if (usersQuery.docs.isNotEmpty) {
+        print('✅ User found in users collection');
+        return;
+      }
+
+      print('⚠️ User not found in users collection');
+      
+      // ENHANCED: Also check in potential legacy collections
+      // You can modify these collection names based on your old project structure
+      final legacyCollections = ['user', 'User', 'accounts', 'profiles', 'members'];
+      
+      for (String collectionName in legacyCollections) {
+        print('🔍 Checking in legacy collection: $collectionName');
+        try {
+          final legacyQuery = await firestore
+              .collection(collectionName)
+              .where('email', isEqualTo: email)
+              .limit(1)
+              .get();
+              
+          if (legacyQuery.docs.isNotEmpty) {
+            print('✅ User found in legacy collection: $collectionName');
+            return;
+          }
+        } catch (e) {
+          print('⚠️ Error checking collection $collectionName: $e');
+          // Continue to next collection
+        }
+      }
+      
+      // MODIFIED: Instead of throwing an error, we'll just log a warning
+      // This allows chat creation to proceed even if the user isn't in the new users collection
+      // since the user mentioned they have old project collections where users might exist
+      print('⚠️ User with email $email not found in users collection, but proceeding with chat creation...');
+      print('💡 Note: The user should ideally be added to the users collection for full functionality');
+      
+    } catch (e) {
+      print('⚠️ Error checking user existence: $e');
+      // Don't throw here - allow chat creation to proceed
+      print('🔄 Proceeding with chat creation despite user check error...');
     }
-
-    print('⚠️ User not found in users collection');
-    
-    // For now, we'll throw an error asking the user to ensure they're registered
-    // In a production app, you might want to try to fetch the user from Firebase Auth
-    // and add them to Firestore, but this requires admin privileges
-    throw Exception("User with email $email not found. Please make sure the user has registered in the app. If they registered recently, ask them to log out and log back in.");
   }
 }
