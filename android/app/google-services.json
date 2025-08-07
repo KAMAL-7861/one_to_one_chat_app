@@ -1,0 +1,207 @@
+{
+  "project_info": {
+    "project_number": "710427881438",
+    "firebase_url": "https://lap-hub-1eeb1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "lap-hub-1eeb1",
+    "storage_bucket": "lap-hub-1eeb1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710427881438:android:a80701a16f4e1375c9374f",
+        "android_client_info": {
+          "package_name": "com.company.laphub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "710427881438-9hjmpif8nitne2ch98gi42f649oka6di.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD61329jKdmswplD0nw73qvVHRA9mdNTTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "710427881438-9hjmpif8nitne2ch98gi42f649oka6di.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "710427881438-tqmfkdsan0q9s25s6qr117npuqd2hl01.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.walkntalk"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710427881438:android:7e1c91e9008dab29c9374f",
+        "android_client_info": {
+          "package_name": "com.embraceit.androidarc_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "710427881438-9hjmpif8nitne2ch98gi42f649oka6di.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD61329jKdmswplD0nw73qvVHRA9mdNTTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "710427881438-9hjmpif8nitne2ch98gi42f649oka6di.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "710427881438-tqmfkdsan0q9s25s6qr117npuqd2hl01.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.walkntalk"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710427881438:android:85e8b609e921ebbdc9374f",
+        "android_client_info": {
+          "package_name": "com.example.chat_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "710427881438-9hjmpif8nitne2ch98gi42f649oka6di.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD61329jKdmswplD0nw73qvVHRA9mdNTTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "710427881438-9hjmpif8nitne2ch98gi42f649oka6di.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "710427881438-tqmfkdsan0q9s25s6qr117npuqd2hl01.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.walkntalk"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710427881438:android:85c86a00cd70a41fc9374f",
+        "android_client_info": {
+          "package_name": "com.example.walkntalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "710427881438-t77s7hu7soqoik0vlh0lv8pdnnkfkr01.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.walkntalk",
+            "certificate_hash": "7ada32a2146b8f62a16fd314c9c630139a2f0b90"
+          }
+        },
+        {
+          "client_id": "710427881438-9hjmpif8nitne2ch98gi42f649oka6di.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD61329jKdmswplD0nw73qvVHRA9mdNTTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "710427881438-9hjmpif8nitne2ch98gi42f649oka6di.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "710427881438-tqmfkdsan0q9s25s6qr117npuqd2hl01.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.walkntalk"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710427881438:android:79b36479b9d65a58c9374f",
+        "android_client_info": {
+          "package_name": "com.social.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "710427881438-q3crfg04fqsjmjv128umr13f78lfgg04.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.social.app",
+            "certificate_hash": "7ada32a2146b8f62a16fd314c9c630139a2f0b90"
+          }
+        },
+        {
+          "client_id": "710427881438-9hjmpif8nitne2ch98gi42f649oka6di.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD61329jKdmswplD0nw73qvVHRA9mdNTTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "710427881438-9hjmpif8nitne2ch98gi42f649oka6di.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "710427881438-tqmfkdsan0q9s25s6qr117npuqd2hl01.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.walkntalk"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

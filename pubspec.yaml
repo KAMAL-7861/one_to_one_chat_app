@@ -1,0 +1,37 @@
+name: chat_app
+description: A Flutter chat app with authentication using clean architecture
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Firebase - Known compatible versions
+  firebase_core: 2.24.2
+  firebase_auth: 4.15.3
+  cloud_firestore: ^4.13.6
+
+  # State Management
+  flutter_bloc: ^8.1.6
+
+  # Dependency Injection
+  get_it: ^7.7.0
+
+  # Others
+  equatable: ^2.0.5
+  dartz: ^0.10.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
